@@ -1,24 +1,37 @@
 const mongoose = require("mongoose");
 
 const PolicySchema = new mongoose.Schema({
-  title: {
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true
+  },
+  policyId: {
+    type: String,
+    required: true,
+    unique: true
+  },
+  policyName: {
     type: String,
     required: true
   },
   description: {
     type: String,
-    required: true
+    default: ""
   },
   coverage: {
-    type: String
+    type: String,
+    default: ""
   },
-  premium: {
-    type: String
+  premiumAmount: {
+    type: Number,
+    required: true
   },
   duration: {
-    type: String
+    type: String,
+    default: ""
   },
-  createdAt: {
+  startDate: {
     type: Date,
     default: Date.now
   }
