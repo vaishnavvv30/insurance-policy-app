@@ -40,9 +40,13 @@ export default function ApplyPolicy() {
     e.preventDefault();
 
     const data = new FormData();
-    Object.keys(formData).forEach((key) => {
-      data.append(key, formData[key]);
-    });
+
+Object.keys(formData).forEach((key) => {
+  data.append(key, formData[key]);
+});
+
+const user = JSON.parse(localStorage.getItem("loggedInUser"));
+data.append("userId", user._id);
 
     data.append("policyId", policyId);
     data.append("photo", photo);

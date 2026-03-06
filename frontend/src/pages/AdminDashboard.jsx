@@ -1,52 +1,41 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function AdminDashboard() {
-  const user = JSON.parse(localStorage.getItem("user"));
+  const navigate = useNavigate();
+  const user = JSON.parse(localStorage.getItem("loggedInUser"));
+
+  const cards = [
+    { title: "Manage Policies",   desc: "Create, edit and delete insurance policies",    color: "bg-primary",          icon: "📋", path: "/manage-policies"       },
+    { title: "Manage Employees",  desc: "Add, view and remove employee accounts",         color: "bg-success",          icon: "👔", path: "/employees"             },
+    { title: "Manage Users",      desc: "View users, applications & claim forms",         color: "bg-dark",             icon: "👥", path: "/manage-users"          },
+    { title: "System Report",     desc: "Monitor platform-wide statistics",               color: "bg-info text-dark",   icon: "📊", path: "/system-report"         },
+    { title: "Announcements",     desc: "Post notices visible to all users on login",     color: "bg-warning text-dark",icon: "📢", path: "/admin/announcements"   }
+  ];
 
   return (
-    <div className="container text-center">
-      <h2 className="mb-3">Admin Dashboard</h2>
-      <p>Welcome, <strong>{user?.name || "Admin"}</strong></p>
+    <div className="container mt-4">
+      <h2 className="text-center mb-1">Admin Dashboard</h2>
+      <p className="text-center text-muted mb-4">
+        Welcome, <strong>{user?.name || user?.email || "Admin"}</strong>
+      </p>
 
-      {/* IMAGE 
-      <img
-        src="/images/admin.png"
-        alt="Admin"
-        className="img-fluid mb-4"
-        style={{ maxWidth: "250px" }}
-      />*/}
-      
-
-
-
-
-      <div className="row">
-        <div className="col-md-4">
-          <div className="card bg-primary text-white mb-3">
-            <div className="card-body">
-              <h5>Manage Policies</h5>
-              <p>Create and manage insurance policies</p>
+      <div className="row justify-content-center">
+        {cards.map((card, i) => (
+          <div className="col-md-4 mb-3" key={i}>
+            <div
+              className={`card ${card.color} h-100`}
+              style={{ cursor: "pointer" }}
+              onClick={() => navigate(card.path)}
+            >
+              <div className="card-body text-center py-4">
+                <div style={{ fontSize: 40 }}>{card.icon}</div>
+                <h5 className="mt-2 mb-1">{card.title}</h5>
+                <p className="mb-0 small">{card.desc}</p>
+              </div>
             </div>
           </div>
-        </div>
-
-        <div className="col-md-4">
-          <div className="card bg-success text-white mb-3">
-            <div className="card-body">
-              <h5>Manage Employees</h5>
-              <p>View employee information</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="col-md-4">
-          <div className="card bg-dark text-white mb-3">
-            <div className="card-body">
-              <h5>Reports</h5>
-              <p>Monitor system activity</p>
-            </div>
-          </div>
-        </div>
+        ))}
       </div>
     </div>
   );
