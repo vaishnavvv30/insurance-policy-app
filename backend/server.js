@@ -200,16 +200,62 @@ app.get("/my-claims/:userId", async (req, res) => {
 
 /* ===============================
    GET USER POLICIES (by email)
-   Returns Application docs with
-   policyTypeName for display
+   Returns Application docs.
+   For old docs missing policyTypeName,
+   we cross-reference the Policy collection
+   using the matching policyId to get policyName.
 ================================= */
 
 app.get("/my-policies/:email", async (req, res) => {
   try {
-    const policies = await Application.find({ email: req.params.email });
-    res.json(policies);
+    const applications = await Application.find({ email: req.params.email });
+
+    // For each application, if policyTypeName is missing,
+    // look it up from the Policy collection by policyId
+    const enriched = await Promise.all(
+      applications.map(async (app) => {
+        const appObj = app.toObject();
+        if (!appObj.policyTypeName) {
+          const matchingPolicy = await Policy.findOne({ policyId: appObj.policyId });
+          if (matchingPolicy && matchingPolicy.policyName) {
+            appObj.policyTypeName = matchingPolicy.policyName;
+          }
+        }
+        return appObj;
+      })
+    );
+
+    res.json(enriched);
   } catch (error) {
     res.status(500).json({ message: "Server error" });
+  }
+});
+
+/* ===============================
+   MIGRATION ROUTE (run once)
+   Backfills policyTypeName on all
+   old Application documents that
+   are missing it.
+   Call: GET /admin/migrate-policy-names
+================================= */
+
+app.get("/admin/migrate-policy-names", async (req, res) => {
+  try {
+    const applications = await Application.find({ policyTypeName: { $in: [null, undefined, ""] } });
+    let updated = 0;
+
+    for (const app of applications) {
+      const matchingPolicy = await Policy.findOne({ policyId: app.policyId });
+      if (matchingPolicy && matchingPolicy.policyName) {
+        await Application.findByIdAndUpdate(app._id, { policyTypeName: matchingPolicy.policyName });
+        updated++;
+      }
+    }
+
+    res.json({ message: `Migration complete. Updated ${updated} of ${applications.length} applications.` });
+  } catch (error) {
+    console.log("MIGRATION ERROR:", error);
+    res.status(500).json({ message: "Migration failed", error: error.message });
   }
 });
 
@@ -349,12 +395,28 @@ app.delete("/admin/delete-user/:id", async (req, res) => {
 
 /* ===============================
    ADMIN - GET ALL APPLICATIONS
+   Cross-references Policy collection
+   to fill missing policyTypeName
 ================================= */
 
 app.get("/admin/applications", async (req, res) => {
   try {
     const applications = await Application.find().sort({ createdAt: -1 });
-    res.json(applications);
+
+    const enriched = await Promise.all(
+      applications.map(async (app) => {
+        const appObj = app.toObject();
+        if (!appObj.policyTypeName) {
+          const matchingPolicy = await Policy.findOne({ policyId: appObj.policyId });
+          if (matchingPolicy && matchingPolicy.policyName) {
+            appObj.policyTypeName = matchingPolicy.policyName;
+          }
+        }
+        return appObj;
+      })
+    );
+
+    res.json(enriched);
   } catch (error) {
     res.status(500).json({ message: "Server error" });
   }
