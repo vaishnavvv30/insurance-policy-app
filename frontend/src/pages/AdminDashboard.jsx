@@ -8,7 +8,7 @@ export default function AdminDashboard() {
   const cards = [
     { title: "Manage Policies",   desc: "Create, edit and delete insurance policies",    color: "bg-primary",          icon: "📋", path: "/manage-policies"       },
     { title: "Manage Employees",  desc: "Add, view and remove employee accounts",         color: "bg-success",          icon: "👔", path: "/employees"             },
-    { title: "Manage Users",      desc: "View users, applications & claim forms",         color: "bg-dark",             icon: "👥", path: "/manage-users"          },
+    { title: "Manage Users",      desc: "View users, applications & claim forms",         color: "bg-danger",             icon: "👥", path: "/manage-users"          },
     { title: "System Report",     desc: "Monitor platform-wide statistics",               color: "bg-info text-dark",   icon: "📊", path: "/system-report"         },
     { title: "Announcements",     desc: "Post notices visible to all users on login",     color: "bg-warning text-dark",icon: "📢", path: "/admin/announcements"   }
   ];
