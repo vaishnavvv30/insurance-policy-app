@@ -1,95 +1,45 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+
+// Each role now has its own dedicated dashboard component.
+// This file simply reads the employeeRole and redirects.
 
 export default function EmployeeDashboard() {
   const navigate = useNavigate();
-  const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const loggedUser = JSON.parse(localStorage.getItem("loggedInUser"));
-    if (!loggedUser || loggedUser.role !== "employee") {
+    const user = JSON.parse(localStorage.getItem("loggedInUser"));
+
+    if (!user || user.role !== "employee") {
       navigate("/login");
-    } else {
-      setUser(loggedUser);
+      return;
+    }
+
+    switch (user.employeeRole) {
+      case "HR":               navigate("/employee/hr-dashboard",     { replace: true }); break;
+      case "Branch Manager":   navigate("/employee/bm-dashboard",     { replace: true }); break;
+      case "Claims Officer":   navigate("/employee/co-dashboard",     { replace: true }); break;
+      case "Policy Officer":   navigate("/employee/po-dashboard",     { replace: true }); break;
+      case "Insurance Agent":  navigate("/employee/agent-dashboard",  { replace: true }); break;
+      default:
+        // No role assigned yet — show warning
+        break;
     }
   }, [navigate]);
 
-  if (!user) return null;
+  // Shown only when employeeRole is null/unassigned
+  const user = JSON.parse(localStorage.getItem("loggedInUser"));
 
   return (
-    <div className="container mt-5">
-      <h2 className="text-center mb-1">Employee Dashboard</h2>
-      <p className="text-center text-muted mb-4">
-        Welcome, <strong>{user.fullName || user.email}</strong>
-      </p>
-
-      <div className="row justify-content-center">
-
-        {/* MANAGE POLICIES */}
-        <div className="col-md-4 mb-3">
-          <div
-            className="card shadow p-4 text-center h-100"
-            style={{ cursor: "pointer", borderTop: "4px solid #0d6efd" }}
-            onClick={() => navigate("/employee/manage-policies")}
-          >
-            <div style={{ fontSize: 36 }}>📋</div>
-            <h5 className="mt-2">Manage Policies</h5>
-            <p className="text-muted">View all customer policy applications</p>
-          </div>
-        </div>
-
-        {/* PROCESS CLAIMS */}
-        <div className="col-md-4 mb-3">
-          <div
-            className="card shadow p-4 text-center h-100"
-            style={{ cursor: "pointer", borderTop: "4px solid #198754" }}
-            onClick={() => navigate("/employee/process-claims")}
-          >
-            <div style={{ fontSize: 36 }}>⚖️</div>
-            <h5 className="mt-2">Process Claims</h5>
-            <p className="text-muted">Review and approve insurance claims</p>
-          </div>
-        </div>
-
-        {/* VIEW CLIENTS */}
-        <div className="col-md-4 mb-3">
-          <div
-            className="card shadow p-4 text-center h-100"
-            style={{ cursor: "pointer", borderTop: "4px solid #6f42c1" }}
-            onClick={() => navigate("/employee/clients")}
-          >
-            <div style={{ fontSize: 36 }}>👥</div>
-            <h5 className="mt-2">View Clients</h5>
-            <p className="text-muted">See all registered client accounts</p>
-          </div>
-        </div>
-
-        {/* CLAIM STATISTICS */}
-        <div className="col-md-4 mb-3">
-          <div
-            className="card shadow p-4 text-center h-100"
-            style={{ cursor: "pointer", borderTop: "4px solid #fd7e14" }}
-            onClick={() => navigate("/employee/statistics")}
-          >
-            <div style={{ fontSize: 36 }}>📊</div>
-            <h5 className="mt-2">Statistics</h5>
-            <p className="text-muted">View claim and policy statistics</p>
-          </div>
-        </div>
-
-        {/* NOTIFICATIONS */}
-        <div className="col-md-4 mb-3">
-          <div
-            className="card shadow p-4 text-center h-100"
-            style={{ cursor: "pointer", borderTop: "4px solid #dc3545" }}
-            onClick={() => navigate("/employee/notifications")}
-          >
-            <div style={{ fontSize: 36 }}>🔔</div>
-            <h5 className="mt-2">Notifications</h5>
-            <p className="text-muted">View pending tasks and alerts</p>
-          </div>
-        </div>
-
+    <div className="container mt-5 text-center">
+      <h2>👤 Employee Dashboard</h2>
+      <p className="text-muted">Welcome, <strong>{user?.fullName || user?.email}</strong></p>
+      <span className="badge bg-secondary px-3 py-2 mb-3" style={{ fontSize: "1rem" }}>
+        ⚠️ No Role Assigned — Contact Admin or HR
+      </span>
+      <div className="alert alert-warning mt-3 mx-auto" style={{ maxWidth: 500 }}>
+        Your account has not been assigned a job role yet.<br />
+        Please contact <strong>Admin</strong> or <strong>HR</strong> to get your role assigned.
       </div>
     </div>
   );

@@ -14,12 +14,11 @@ export default function ClientDashboard() {
       setUser(loggedUser);
     }
 
-    // Fetch announcements from admin
     const fetchAnnouncements = async () => {
       try {
         const res  = await fetch("http://localhost:5000/announcements");
         const data = await res.json();
-        setAnnouncements(data.slice(0, 3)); // show latest 3
+        setAnnouncements(data.slice(0, 3));
       } catch (error) { console.log(error); }
     };
     fetchAnnouncements();
@@ -28,11 +27,12 @@ export default function ClientDashboard() {
   if (!user) return null;
 
   const cards = [
-    { title: "View Policies",  desc: "Browse available insurance policies",    icon: "📋", path: "/policies",       border: "#0d6efd" },
-    { title: "My Policies",    desc: "View your active applied policies",       icon: "🗂️",  path: "/my-policies",    border: "#6f42c1" },
-    { title: "Submit Claim",   desc: "Submit an insurance claim easily",        icon: "📝", path: "/submit-claim",   border: "#198754" },
-    { title: "Track Claims",   desc: "Track the status of your claims",         icon: "🔍", path: "/track-claims",   border: "#fd7e14" },
-    { title: "Premium Calc",   desc: "Estimate your annual premium cost",       icon: "🧮", path: "/premium-calculator", border: "#dc3545" }
+    { title: "View Policies",    desc: "Browse available insurance policies",      icon: "📋", path: "/policies",           border: "#0d6efd" },
+    { title: "My Policies",      desc: "View your active applied policies",         icon: "🗂️",  path: "/my-policies",        border: "#6f42c1" },
+    { title: "Submit Claim",     desc: "Submit an insurance claim easily",          icon: "📝", path: "/submit-claim",       border: "#198754" },
+    { title: "Track Claims",     desc: "Track the status of your claims",           icon: "🔍", path: "/track-claims",       border: "#fd7e14" },
+    { title: "Premium Calc",     desc: "Estimate your annual premium cost",         icon: "🧮", path: "/premium-calculator", border: "#dc3545" },
+    { title: "Chat with Agent",  desc: "Get help from an insurance agent instantly",icon: "💬", path: "/client-chat",        border: "#0dcaf0" }
   ];
 
   return (
@@ -41,7 +41,7 @@ export default function ClientDashboard() {
       <h2 className="text-center mb-1">Welcome, <strong>{user.fullName}</strong> 👋</h2>
       <p className="text-center text-muted mb-4">Your Insurance Dashboard</p>
 
-      {/* ANNOUNCEMENTS from Admin */}
+      {/* ANNOUNCEMENTS */}
       {announcements.length > 0 && (
         <div className="mb-4">
           <h6 className="text-muted mb-2">📢 Announcements</h6>
