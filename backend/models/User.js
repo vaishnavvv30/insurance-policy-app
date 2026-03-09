@@ -17,6 +17,14 @@ const UserSchema = new mongoose.Schema({
   role: {
     type: String,
     default: "client"
+    // values: "client", "employee", "admin"
+  },
+  employeeRole: {
+    type: String,
+    default: null,
+    enum: [null, "HR", "Branch Manager", "Insurance Agent", "Claims Officer", "Policy Officer"]
+    // Only set when role === "employee"
+    // Hierarchy: HR → Branch Manager → Insurance Agent / Claims Officer / Policy Officer
   },
   createdAt: {
     type: Date,
