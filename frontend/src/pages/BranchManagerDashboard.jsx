@@ -58,10 +58,6 @@ export default function BranchManagerDashboard() {
         </span>
       </div>
 
-      <div className="alert py-2 mb-4" style={{ backgroundColor: "#343a4018", border: "1px solid #343a40" }}>
-        <strong>Your Responsibilities:</strong> Supervise branch operations, monitor team activity, view clients, post announcements, and assist clients via chat.
-      </div>
-
       {announcements.length > 0 && (
         <div className="mb-4">
           <h6 className="text-muted mb-2">📢 Latest Announcements</h6>

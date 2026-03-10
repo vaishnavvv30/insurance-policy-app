@@ -102,8 +102,8 @@ data.append("userId", user._id);
           <input name="nomineeName" onChange={handleChange} placeholder="Nominee Name" className="form-control mb-2" required />
           <input name="nomineeRelation" onChange={handleChange} placeholder="Nominee Relation" className="form-control mb-2" required />
 
-          <input type="file" onChange={(e) => setPhoto(e.target.files[0])} className="form-control mb-2" required />
-          <input type="file" onChange={(e) => setIdProof(e.target.files[0])} className="form-control mb-2" required />
+          {"Photo: "}<input type="file" onChange={(e) => setPhoto(e.target.files[0])} className="form-control mb-2" required />
+          {"ID Proof: "}<input type="file" onChange={(e) => setIdProof(e.target.files[0])} className="form-control mb-2" required />
 
           <button className="btn btn-primary w-100 mt-3">
             Submit

@@ -96,6 +96,17 @@ export default function Register() {
             required
           />
 
+
+          <small className="text-muted">
+Password Instructions:
+<ul style={{marginTop:"5px"}}>
+  <li>Password must contain at least 8 characters</li>
+  <li>Must include at least one uppercase letter (A–Z)</li>
+  <li>Must include numbers (0–9)</li>
+  <li>Must include special characters (@, #, %, $, &)</li>
+  <li>Password should not contain spaces</li>
+</ul>
+</small>
           <div className="progress mb-2" style={{ height: "8px" }}>
             <div
               className={`progress-bar ${

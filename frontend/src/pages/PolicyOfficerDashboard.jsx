@@ -70,10 +70,6 @@ export default function PolicyOfficerDashboard() {
         </span>
       </div>
 
-      <div className="alert py-2 mb-4" style={{ backgroundColor: "#19875418", border: "1px solid #198754" }}>
-        <strong>Your Responsibilities:</strong> Verify policy applications, approve or reject client applications, maintain policy records, and assist with policy updates.
-      </div>
-
       {/* Announcements */}
       {announcements.length > 0 && (
         <div className="mb-4">

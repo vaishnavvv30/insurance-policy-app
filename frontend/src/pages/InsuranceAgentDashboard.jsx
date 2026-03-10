@@ -78,10 +78,6 @@ export default function InsuranceAgentDashboard() {
         </span>
       </div>
 
-      <div className="alert py-2 mb-4" style={{ backgroundColor: "#0d6efd18", border: "1px solid #0d6efd" }}>
-        <strong>Your Responsibilities:</strong> Assist clients with policy applications, explain policies, help with claims, and respond to client queries via chat.
-      </div>
-
       {/* Stats */}
       <div className="row mb-4">
         {[

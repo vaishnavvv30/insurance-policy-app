@@ -55,10 +55,6 @@ export default function ClaimsOfficerDashboard() {
         </span>
       </div>
 
-      <div className="alert py-2 mb-4" style={{ backgroundColor: "#dc354518", border: "1px solid #dc3545" }}>
-        <strong>Your Responsibilities:</strong> Review submitted insurance claims, verify documents, and approve or reject claims.
-      </div>
-
       {/* Pending alert */}
       {stats.pending > 0 && (
         <div className="alert alert-warning d-flex justify-content-between align-items-center mb-3">

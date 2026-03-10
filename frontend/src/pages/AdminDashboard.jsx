@@ -27,10 +27,11 @@ export default function AdminDashboard() {
   }, []);
 
   const cards = [
-    { title: "Manage Employees", desc: "View, hire HR staff and oversee all employees",    color: "bg-success",        icon: "👔", path: "/employees"         },
+    { title: "Manage Employees", 
+      desc: "View, hire HR staff and oversee all employees",    color: "bg-success",        icon: "👔", path: "/employees"         },
     { title: "Manage Policies",  desc: "Create, edit and remove insurance policies",       color: "bg-primary",        icon: "🗂️",  path: "/admin/policies"    },
     { title: "System Report",    desc: "Monitor platform-wide statistics and activity",    color: "bg-info text-dark", icon: "📊", path: "/system-report"      },
-    { title: "Audit Log",        desc: "Track all system activities and changes",          color: "bg-dark",           icon: "🔍", path: "/admin/audit-log"   },
+    { title: "Audit Log",        desc: "Track all system activities and changes",          color: "bg-danger",           icon: "🔍", path: "/admin/audit-log"   },
     { title: "System Settings",  desc: "Configure platform preferences and access",        color: "bg-secondary",      icon: "⚙️",  path: "/admin/settings"    }
   ];
 

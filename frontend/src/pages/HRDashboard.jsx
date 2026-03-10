@@ -61,12 +61,6 @@ export default function HRDashboard() {
         </span>
       </div>
 
-      {/* Responsibility banner */}
-      <div className="alert py-2 mb-4 text-center"
-        style={{ backgroundColor: "#6f42c115", border: "1px solid #6f42c1" }}>
-        <strong>Your Responsibilities:</strong> Hire employees, maintain employee records, and assign job roles within the organisation.
-      </div>
-
       {/* Announcements from Admin */}
       {announcements.length > 0 && (
         <div className="mb-4">
