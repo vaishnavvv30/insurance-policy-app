@@ -43,8 +43,7 @@ export default function BranchManagerDashboard() {
     { title: "View Clients",       desc: "See all registered client accounts",              icon: "👥", path: "/employee/clients",          border: "#6f42c1" },
     { title: "Team Overview",      desc: "View your team members and their roles",          icon: "👔", path: "/employee/team-overview",    border: "#343a40" },
     { title: "Statistics",         desc: "View claims, policies & performance metrics",     icon: "📊", path: "/employee/statistics",       border: "#fd7e14" },
-    { title: "Post Announcement",  desc: "Post notices visible to all staff and clients",  icon: "📢", path: "/employee/bm-announcements", border: "#ffc107" },
-    { title: "Chat with Clients",  desc: "Message clients directly via the chat panel",    icon: "💬", path: "/employee/agent-chat",       border: "#0d6efd" }
+    { title: "Post Announcement",  desc: "Post notices visible to all staff and clients",  icon: "📢", path: "/employee/bm-announcements", border: "#ffc107" }
   ];
 
   return (
