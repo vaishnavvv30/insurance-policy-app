@@ -1,7 +1,11 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
-const multer = require("multer");
+const multer     = require("multer");
+const nodemailer = require("nodemailer");
+
+// In-memory OTP store: { email -> { code, expiresAt } }
+const otpStore = {};
 
 const User = require("./models/User");
 const Claim = require("./models/Claim");
@@ -351,6 +355,93 @@ app.get("/chat/unread/:agentEmail", async (req, res) => {
     ]);
     const unread = rooms.filter(r => r.lastRole === "client").length;
     res.json({ unread, rooms });
+  } catch (e) { res.status(500).json({ message: "Server error" }); }
+});
+
+/* ══════════════════════════════════════════════
+   NODEMAILER TRANSPORTER
+   Replace with your Gmail + App Password
+══════════════════════════════════════════════ */
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: "policynest2@gmail.com",      // ← replace with your Gmail
+    pass: "zfhsqqrawpghhazg"     // ← replace with your 16-char App Password
+  }
+});
+
+/* ══════════════════════════════════════════════
+   FORGOT PASSWORD
+   Step 1 — POST /forgot-password/send-otp
+             Checks email exists, generates 6-digit
+             OTP, sends it via Gmail, stores in memory
+             for 10 minutes.
+   Step 2 — POST /forgot-password/verify-otp
+             Verifies the OTP is correct & not expired.
+   Step 3 — POST /forgot-password/reset
+             Updates the password in DB.
+══════════════════════════════════════════════ */
+
+// Step 1: Send OTP
+app.post("/forgot-password/send-otp", async (req, res) => {
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) return res.status(404).json({ message: "No account found with this email." });
+
+    // Generate 6-digit OTP
+    const code      = Math.floor(100000 + Math.random() * 900000).toString();
+    const expiresAt = Date.now() + 10 * 60 * 1000; // 10 minutes
+    otpStore[email] = { code, expiresAt };
+
+    // Send email
+    await transporter.sendMail({
+      from:    '"PolicyNest" <policynest2@gmail.com>',  // ← same Gmail as above
+      to:      email,
+      subject: "Your PolicyNest Password Reset Code",
+      html: `
+        <div style="font-family:Arial,sans-serif;max-width:480px;margin:auto;border:1px solid #dee2e6;border-radius:8px;padding:32px;">
+          <h2 style="color:#0d6efd;margin-top:0;">🔐 Password Reset</h2>
+          <p>You requested a password reset for your <strong>PolicyNest</strong> account.</p>
+          <p>Your verification code is:</p>
+          <div style="font-size:36px;font-weight:bold;letter-spacing:10px;color:#0d6efd;text-align:center;padding:16px;background:#f0f4ff;border-radius:8px;margin:16px 0;">
+            ${code}
+          </div>
+          <p style="color:#6c757d;font-size:13px;">This code expires in <strong>10 minutes</strong>. Do not share it with anyone.</p>
+          <p style="color:#6c757d;font-size:13px;">If you did not request this, please ignore this email.</p>
+        </div>
+      `
+    });
+
+    res.json({ message: "OTP sent to your email." });
+  } catch (e) {
+    console.log("SEND OTP ERROR:", e);
+    res.status(500).json({ message: "Failed to send email. Check server config." });
+  }
+});
+
+// Step 2: Verify OTP
+app.post("/forgot-password/verify-otp", async (req, res) => {
+  try {
+    const { email, code } = req.body;
+    const record = otpStore[email];
+    if (!record)                     return res.status(400).json({ message: "No OTP requested for this email." });
+    if (Date.now() > record.expiresAt) { delete otpStore[email]; return res.status(400).json({ message: "OTP has expired. Please request a new one." }); }
+    if (record.code !== code)        return res.status(400).json({ message: "Incorrect code. Please try again." });
+    res.json({ message: "OTP verified." });
+  } catch (e) { res.status(500).json({ message: "Server error" }); }
+});
+
+// Step 3: Reset password
+app.post("/forgot-password/reset", async (req, res) => {
+  try {
+    const { email, code, newPassword } = req.body;
+    const record = otpStore[email];
+    if (!record || Date.now() > record.expiresAt || record.code !== code)
+      return res.status(400).json({ message: "Invalid or expired OTP." });
+    await User.findOneAndUpdate({ email }, { password: newPassword });
+    delete otpStore[email];
+    res.json({ message: "Password reset successfully." });
   } catch (e) { res.status(500).json({ message: "Server error" }); }
 });
 
