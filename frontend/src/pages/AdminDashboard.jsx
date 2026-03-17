@@ -27,24 +27,24 @@ export default function AdminDashboard() {
   }, []);
 
   const cards = [
-    { title: "Manage Employees", 
-      desc: "View, hire HR staff and oversee all employees",    color: "bg-success",        icon: "👔", path: "/employees"         },
-    { title: "Manage Policies",  desc: "Create, edit and remove insurance policies",       color: "bg-primary",        icon: "🗂️",  path: "/admin/policies"    },
-    { title: "System Report",    desc: "Monitor platform-wide statistics and activity",    color: "bg-info text-dark", icon: "📊", path: "/system-report"      },
-    { title: "Audit Log",        desc: "Track all system activities and changes",          color: "bg-danger",           icon: "🔍", path: "/admin/audit-log"   },
-    { title: "System Settings",  desc: "Configure platform preferences and access",        color: "bg-secondary",      icon: "⚙️",  path: "/admin/settings"    }
+    { title: "Manage Employees",   desc: "View, hire HR staff and oversee all employees",          color: "bg-success",        path: "/employees"            },
+    { title: "Manage Policies",    desc: "Create, edit and remove insurance policies",              color: "bg-primary",        path: "/admin/policies"       },
+    { title: "System Report",      desc: "Monitor platform-wide statistics and activity",           color: "bg-info text-dark", path: "/system-report"        },
+    { title: "Audit Log",          desc: "Track all system activities and changes",                 color: "bg-danger",         path: "/admin/audit-log"      },
+    { title: "System Settings",    desc: "Configure platform preferences and access",               color: "bg-secondary",      path: "/admin/settings"       },
+    { title: "Post Announcement",  desc: "Broadcast notices to all employees and clients",          color: "bg-warning text-dark", path: "/admin/announcements" },
   ];
 
   const statCards = [
-    { label: "Total Employees", value: stats.totalEmployees, color: "#0d6efd", icon: "👔" },
-    { label: "Total Users",     value: stats.totalUsers,     color: "#198754", icon: "👥" },
-    { label: "Total Policies",  value: stats.totalPolicies,  color: "#6f42c1", icon: "📋" },
-    { label: "Total Claims",    value: stats.totalClaims,    color: "#dc3545", icon: "⚖️"  }
+    { label: "Total Employees", value: stats.totalEmployees, color: "#0d6efd" },
+    { label: "Total Users",     value: stats.totalUsers,     color: "#198754" },
+    { label: "Total Policies",  value: stats.totalPolicies,  color: "#6f42c1" },
+    { label: "Total Claims",    value: stats.totalClaims,    color: "#dc3545" }
   ];
 
   return (
     <div className="container mt-4">
-      <h2 className="text-center mb-1">⚙️ Admin Dashboard</h2>
+      <h2 className="text-center mb-1">Admin Dashboard</h2>
       <p className="text-center text-muted mb-4">
         Welcome, <strong>{user?.name || user?.email || "Admin"}</strong>
       </p>
@@ -54,7 +54,6 @@ export default function AdminDashboard() {
         {statCards.map((s, i) => (
           <div className="col-md-3 col-6 mb-2" key={i}>
             <div className="card text-white text-center p-3" style={{ backgroundColor: s.color }}>
-              <div style={{ fontSize: 28 }}>{s.icon}</div>
               <h3 className="mb-0 mt-1">{s.value ?? "—"}</h3>
               <small>{s.label}</small>
             </div>
@@ -72,7 +71,6 @@ export default function AdminDashboard() {
               onClick={() => navigate(card.path)}
             >
               <div className="card-body text-center py-4">
-                <div style={{ fontSize: 40 }}>{card.icon}</div>
                 <h5 className="mt-2 mb-1">{card.title}</h5>
                 <p className="mb-0 small">{card.desc}</p>
               </div>

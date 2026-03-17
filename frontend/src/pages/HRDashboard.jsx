@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 
 export default function HRDashboard() {
   const navigate = useNavigate();
-  const [user,          setUser]          = useState(null);
-  const [staffCount,    setStaffCount]    = useState({ total: 0, byRole: {} });
+  const [user, setUser] = useState(null);
+  const [staffCount, setStaffCount] = useState({ total: 0, byRole: {} });
   const [announcements, setAnnouncements] = useState([]);
 
   useEffect(() => {
@@ -36,17 +36,17 @@ export default function HRDashboard() {
   if (!user) return null;
 
   const cards = [
-    { title: "Manage Employees", desc: "Hire Branch Managers, Agents, Claims & Policy Officers", icon: "👥", path: "/employee/hr-manage",       border: "#6f42c1" },
-    { title: "Employee Directory",desc: "View all staff records and contact info",               icon: "📒", path: "/employee/hr-directory",    border: "#0d6efd" },
-    { title: "HR Reports",        desc: "View hiring activity and staff statistics",             icon: "📊", path: "/employee/hr-reports",      border: "#fd7e14" },
-    { title: "Announcements",     desc: "Read notices from Admin",                              icon: "📢", path: "/employee/hr-announcements", border: "#ffc107" }
+    { title: "Manage Employees", desc: "Hire Branch Managers, Agents, Claims & Policy Officers", path: "/employee/hr-manage", border: "#6f42c1" },
+    { title: "Employee Directory", desc: "View all staff records and contact info", path: "/employee/hr-directory", border: "#0d6efd" },
+    { title: "HR Reports", desc: "View hiring activity and staff statistics", path: "/employee/hr-reports", border: "#fd7e14" },
+    { title: "Announcements", desc: "Read notices from Admin", path: "/employee/hr-announcements", border: "#ffc107" }
   ];
 
   const roleColors = {
-    "Branch Manager":  "#343a40",
+    "Branch Manager": "#343a40",
     "Insurance Agent": "#0d6efd",
-    "Claims Officer":  "#dc3545",
-    "Policy Officer":  "#198754"
+    "Claims Officer": "#dc3545",
+    "Policy Officer": "#198754"
   };
 
   return (
@@ -54,17 +54,17 @@ export default function HRDashboard() {
 
       {/* Header */}
       <div className="text-center mb-4">
-        <h2 className="mb-1">🧑‍💼 HR Dashboard</h2>
+        <h2 className="mb-1">HR Dashboard</h2>
         <p className="text-muted mb-2">Welcome, <strong>{user.fullName}</strong></p>
         <span className="badge px-3 py-2 text-white" style={{ backgroundColor: "#6f42c1", fontSize: "0.95rem" }}>
-          🧑‍💼 Human Resources
+          Human Resources
         </span>
       </div>
 
       {/* Announcements from Admin */}
       {announcements.length > 0 && (
         <div className="mb-4">
-          <h6 className="text-muted mb-2">📢 Latest Announcements from Admin</h6>
+          <h6 className="text-muted mb-2 text-center">Latest Announcements from Admin</h6>
           {announcements.map(ann => (
             <div key={ann._id} className="alert alert-warning py-2 px-3 mb-2">
               <strong>{ann.title}:</strong> {ann.message}
@@ -74,16 +74,16 @@ export default function HRDashboard() {
       )}
 
       {/* Staff stats */}
-      <div className="row mb-4">
+      <div className="row mb-4 text-center">
         <div className="col-md-3 col-6 mb-2">
-          <div className="card text-white text-center p-3" style={{ backgroundColor: "#6f42c1" }}>
+          <div className="card text-white p-3" style={{ backgroundColor: "#6f42c1" }}>
             <h3 className="mb-0">{staffCount.total}</h3>
             <small>Total Staff Hired</small>
           </div>
         </div>
         {Object.entries(roleColors).map(([role, color]) => (
           <div className="col-md-3 col-6 mb-2" key={role}>
-            <div className="card text-white text-center p-3" style={{ backgroundColor: color }}>
+            <div className="card text-white p-3" style={{ backgroundColor: color }}>
               <h3 className="mb-0">{staffCount.byRole[role] || 0}</h3>
               <small>{role}s</small>
             </div>
@@ -92,13 +92,14 @@ export default function HRDashboard() {
       </div>
 
       {/* Feature cards */}
-      <div className="row justify-content-center">
+      <div className="row justify-content-center text-center">
         {cards.map((card, i) => (
           <div className="col-md-6 mb-3" key={i}>
-            <div className="card shadow p-4 text-center h-100"
+            <div
+              className="card shadow p-4 h-100"
               style={{ cursor: "pointer", borderTop: `4px solid ${card.border}` }}
-              onClick={() => navigate(card.path)}>
-              <div style={{ fontSize: 36 }}>{card.icon}</div>
+              onClick={() => navigate(card.path)}
+            >
               <h5 className="mt-2">{card.title}</h5>
               <p className="text-muted mb-0">{card.desc}</p>
             </div>

@@ -5,6 +5,7 @@ import Footer from "./components/Footer.jsx";
 
 import Login             from "./pages/Login.jsx";
 import Register          from "./pages/Register.jsx";
+import ForgotPassword    from "./pages/ForgotPassword";
 import PolicyList        from "./pages/PolicyList.jsx";
 import About             from "./pages/About.jsx";
 import Contact           from "./pages/Contact.jsx";
@@ -28,6 +29,7 @@ import ManageUsers         from "./pages/ManageUsers";
 import SystemReport        from "./pages/SystemReport";
 import AuditLog            from "./pages/AuditLog";
 import SystemSettings      from "./pages/SystemSettings";
+import AdminAnnouncements  from "./pages/AdminAnnouncements.jsx";
 
 /* ── EMPLOYEE ROUTER ──────────────────────────────── */
 import EmployeeDashboard from "./pages/EmployeeDashboard.jsx";
@@ -40,8 +42,8 @@ import HRReports         from "./pages/HRReports";
 
 /* ── BRANCH MANAGER ───────────────────────────────── */
 import BranchManagerDashboard from "./pages/BranchManagerDashboard";
+import BMBranchReport         from "./pages/BMBranchReport";
 import TeamOverview           from "./pages/TeamOverview";
-import BMPostAnnouncements    from "./pages/BMPostAnnouncements";
 import EmployeeViewClients    from "./pages/EmployeeViewClients";
 import EmployeeStatistics     from "./pages/EmployeeStatistics";
 
@@ -76,6 +78,7 @@ export default function App() {
           <Route path="/"                     element={<PolicyList />} />
           <Route path="/login"                element={<Login />} />
           <Route path="/register"             element={<Register />} />
+          <Route path="/forgot-password"      element={<ForgotPassword />} />
           <Route path="/policies"             element={<PolicyList />} />
           <Route path="/about"                element={<About />} />
           <Route path="/contact"              element={<Contact />} />
@@ -92,13 +95,14 @@ export default function App() {
           <Route path="/client-chat"     element={<ClientChat />} />
 
           {/* Admin */}
-          <Route path="/admin"             element={<AdminDashboard />} />
-          <Route path="/admin/policies"    element={<AdminManagePolicies />} />
-          <Route path="/employees"         element={<ViewEmployees />} />
-          <Route path="/manage-users"      element={<ManageUsers />} />
-          <Route path="/system-report"     element={<SystemReport />} />
-          <Route path="/admin/audit-log"   element={<AuditLog />} />
-          <Route path="/admin/settings"    element={<SystemSettings />} />
+          <Route path="/admin"                   element={<AdminDashboard />} />
+          <Route path="/admin/policies"          element={<AdminManagePolicies />} />
+          <Route path="/admin/announcements"     element={<AdminAnnouncements />} />
+          <Route path="/employees"               element={<ViewEmployees />} />
+          <Route path="/manage-users"            element={<ManageUsers />} />
+          <Route path="/system-report"           element={<SystemReport />} />
+          <Route path="/admin/audit-log"         element={<AuditLog />} />
+          <Route path="/admin/settings"          element={<SystemSettings />} />
 
           {/* Employee router */}
           <Route path="/employee" element={<EmployeeDashboard />} />
@@ -110,12 +114,13 @@ export default function App() {
           <Route path="/employee/hr-reports"       element={<HRReports />} />
           <Route path="/employee/hr-announcements" element={<AnnouncementsView />} />
 
-          {/* Branch Manager — no bm-policies route */}
+          {/* Branch Manager */}
           <Route path="/employee/bm-dashboard"     element={<BranchManagerDashboard />} />
-          <Route path="/employee/bm-announcements" element={<BMPostAnnouncements />} />
+          <Route path="/employee/bm-announcements" element={<AnnouncementsView />} />
           <Route path="/employee/team-overview"    element={<TeamOverview />} />
           <Route path="/employee/clients"          element={<EmployeeViewClients />} />
           <Route path="/employee/statistics"       element={<EmployeeStatistics />} />
+          <Route path="/employee/bm-report"        element={<BMBranchReport />} />
 
           {/* Claims Officer */}
           <Route path="/employee/co-dashboard"     element={<ClaimsOfficerDashboard />} />

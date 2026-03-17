@@ -77,7 +77,12 @@ return (
       </form>
 
       <p className="mt-3">
-        <a href="#">Forgot password?</a>
+        <span
+          style={{ color: "#0d6efd", cursor: "pointer" }}
+          onClick={() => navigate("/forgot-password")}
+        >
+          Forgot password?
+        </span>
       </p>
     </div>
   </div>

@@ -4,8 +4,9 @@ import { useNavigate } from "react-router-dom";
 export default function AdminAnnouncements() {
   const navigate = useNavigate();
   const [announcements, setAnnouncements] = useState([]);
-  const [title,   setTitle]   = useState("");
-  const [message, setMessage] = useState("");
+  const [title,    setTitle]    = useState("");
+  const [message,  setMessage]  = useState("");
+  const [audience, setAudience] = useState("all");
 
   const fetchAnnouncements = async () => {
     try {
@@ -23,9 +24,9 @@ export default function AdminAnnouncements() {
       await fetch("http://localhost:5000/announcements", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title, message })
+        body: JSON.stringify({ title, message, audience })
       });
-      setTitle(""); setMessage("");
+      setTitle(""); setMessage(""); setAudience("all");
       fetchAnnouncements();
     } catch (error) { console.log(error); }
   };
@@ -67,6 +68,15 @@ export default function AdminAnnouncements() {
           value={message}
           onChange={(e) => setMessage(e.target.value)}
         />
+
+        {/* Audience selector */}
+        <label className="form-label fw-semibold mt-1 mb-2">Visible to:</label>
+        <div className="d-flex gap-2 mb-3">
+          <button className={`btn ${audience === "all"       ? "btn-warning"          : "btn-outline-secondary"}`} onClick={() => setAudience("all")}>       🌐 All            </button>
+          <button className={`btn ${audience === "employees" ? "btn-primary"          : "btn-outline-secondary"}`} onClick={() => setAudience("employees")}> 👔 Employees Only </button>
+          <button className={`btn ${audience === "clients"   ? "btn-success"          : "btn-outline-secondary"}`} onClick={() => setAudience("clients")}>   👤 Clients Only   </button>
+        </div>
+
         <button className="btn btn-warning" onClick={addAnnouncement}>
           📢 Post Announcement
         </button>
@@ -80,7 +90,12 @@ export default function AdminAnnouncements() {
           <div key={ann._id} className="card mb-3 p-3 border-start border-warning border-3">
             <div className="d-flex justify-content-between align-items-start">
               <div>
-                <h6 className="mb-1">{ann.title}</h6>
+                <h6 className="mb-1">
+                  {ann.title}
+                  <span className={`ms-2 badge ${ann.audience === "employees" ? "bg-primary" : ann.audience === "clients" ? "bg-success" : "bg-warning text-dark"}`} style={{ fontSize: 10 }}>
+                    {ann.audience === "employees" ? "Employees" : ann.audience === "clients" ? "Clients" : "All"}
+                  </span>
+                </h6>
                 <p className="mb-1 text-muted">{ann.message}</p>
                 <small className="text-muted">
                   {new Date(ann.createdAt).toLocaleDateString()} {new Date(ann.createdAt).toLocaleTimeString()}
