@@ -127,6 +127,7 @@ export default function POApplications() {
                 <th>Annual Income</th>
                 <th>Submitted</th>
                 <th>Status</th>
+                <th>Payment</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -150,6 +151,15 @@ export default function POApplications() {
                       <span className={`badge ${status === "Approved" ? "bg-success" : status === "Rejected" ? "bg-danger" : "bg-warning text-dark"}`}>
                         {status}
                       </span>
+                    </td>
+                    {/* ── Added: Payment column ── */}
+                    <td>
+                      <span className={`badge ${app.paymentStatus === "Successful" ? "bg-success" : "bg-warning text-dark"}`}>
+                        {app.paymentStatus === "Successful" ? "Successful" : "Pending"}
+                      </span>
+                      {app.paymentStatus === "Successful" && app.amountPaid > 0 && (
+                        <div className="text-muted" style={{ fontSize: 11 }}>₹{app.amountPaid}</div>
+                      )}
                     </td>
                     <td>
                       {status === "Pending" ? (
@@ -210,6 +220,18 @@ export default function POApplications() {
                             <span className={`badge ${(selected.status || "Pending") === "Approved" ? "bg-success" : (selected.status || "Pending") === "Rejected" ? "bg-danger" : "bg-warning text-dark"}`}>
                               {selected.status || "Pending"}
                             </span>
+                          </td>
+                        </tr>
+                        {/* ── Added: Payment row in modal ── */}
+                        <tr>
+                          <td className="text-muted">Payment:</td>
+                          <td>
+                            <span className={`badge ${selected.paymentStatus === "Successful" ? "bg-success" : "bg-warning text-dark"}`}>
+                              {selected.paymentStatus === "Successful" ? "Successful" : "Pending"}
+                            </span>
+                            {selected.paymentStatus === "Successful" && selected.amountPaid > 0 && (
+                              <span className="ms-2 text-success fw-bold">₹{selected.amountPaid}</span>
+                            )}
                           </td>
                         </tr>
                       </tbody>

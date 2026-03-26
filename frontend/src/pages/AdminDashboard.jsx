@@ -31,7 +31,6 @@ export default function AdminDashboard() {
     { title: "Manage Policies",    desc: "Create, edit and remove insurance policies",              color: "bg-primary",        path: "/admin/policies"       },
     { title: "System Report",      desc: "Monitor platform-wide statistics and activity",           color: "bg-info text-dark", path: "/system-report"        },
     { title: "Audit Log",          desc: "Track all system activities and changes",                 color: "bg-danger",         path: "/admin/audit-log"      },
-    { title: "System Settings",    desc: "Configure platform preferences and access",               color: "bg-secondary",      path: "/admin/settings"       },
     { title: "Post Announcement",  desc: "Broadcast notices to all employees and clients",          color: "bg-warning text-dark", path: "/admin/announcements" },
   ];
 

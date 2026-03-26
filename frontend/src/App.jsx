@@ -20,7 +20,7 @@ import SubmitClaim     from "./pages/SubmitClaim";
 import TrackClaims     from "./pages/TrackClaims";
 import MyPolicies      from "./pages/MyPolicies";
 import ClientChat      from "./pages/ClientChat";
-
+import Payment         from "./pages/Payment";
 /* ── ADMIN ────────────────────────────────────────── */
 import AdminDashboard      from "./pages/AdminDashboard.jsx";
 import AdminManagePolicies from "./pages/AdminManagePolicies";
@@ -93,7 +93,8 @@ export default function App() {
           <Route path="/track-claims"    element={<TrackClaims />} />
           <Route path="/my-policies"     element={<MyPolicies />} />
           <Route path="/client-chat"     element={<ClientChat />} />
-
+          <Route path="/payment/:applicationId" element={<Payment />} />
+          
           {/* Admin */}
           <Route path="/admin"                   element={<AdminDashboard />} />
           <Route path="/admin/policies"          element={<AdminManagePolicies />} />
