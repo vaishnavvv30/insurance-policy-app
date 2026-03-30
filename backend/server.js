@@ -96,16 +96,22 @@ app.get("/", (req, res) => res.send("Server Running"));
 app.post("/apply-policy", upload.fields([{ name: "photo", maxCount: 1 }, { name: "idProof", maxCount: 1 }]), async (req, res) => {
   try {
     const policyId = generatePolicyId();
+
+    /* ── FIX: look up the actual policy name using the _id sent from frontend ── */
+    const policyDoc = await Policy.findById(req.body.policyId);
+    const policyTypeName = policyDoc ? policyDoc.policyName : req.body.policyId;
+    /* ────────────────────────────────────────────────────────────────────────── */
+
     const applicationData = {
       ...req.body, policyId,
-      policyTypeName: req.body.policyId,
+      policyTypeName,
       /* ── CLOUDINARY: store secure_url instead of filename ── */
       photo:   req.files.photo[0].path,
       idProof: req.files.idProof[0].path,
       /* ───────────────────────────────────────────────────── */
     };
     await new Application(applicationData).save();
-    await new Policy({ userId: req.body.userId, policyId, policyName: req.body.policyId, premiumAmount: req.body.annualIncome }).save();
+    await new Policy({ userId: req.body.userId, policyId, policyName: policyTypeName, premiumAmount: req.body.annualIncome }).save();
     res.status(201).json({ message: "Application submitted successfully!", policyId });
   } catch (error) {
     console.log("APPLICATION ERROR:", error);
@@ -402,5 +408,5 @@ app.post("/payment/complete/:applicationId", async (req, res) => {
     res.json({ message: "Payment successful!" });
   } catch (e) { res.status(500).json({ message: "Server error" }); }
 });
-
+require("./models/MonthlyReminder");
 app.listen(5000, () => console.log("Server running on port 5000"));
