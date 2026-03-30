@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const formatPolicyName = (typeName) => {
+const isMongoId = (s) => /^[a-f0-9]{24}$/i.test((s || "").trim());
+
+const formatPolicyName = (typeName, resolvedName) => {
   if (!typeName) return "—";
+  // If it looks like a MongoDB _id, use the resolved name if available
+  if (isMongoId(typeName)) return resolvedName || "Insurance Policy";
   const map = {
     housing:    "Housing Insurance",
     health:     "Health Insurance",
@@ -21,14 +25,24 @@ export default function MyPolicies() {
   const [policies, setPolicies] = useState([]);
   const [loading,  setLoading]  = useState(true);
 
+  const [policyNameMap, setPolicyNameMap] = useState({});
+
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("loggedInUser"));
     if (!user) { navigate("/login"); return; }
 
     const fetchPolicies = async () => {
       try {
-        const res  = await fetch(`http://localhost:5000/my-policies/${user.email}`);
-        const data = await res.json();
+        const [appRes, polRes] = await Promise.all([
+          fetch(`http://localhost:5000/my-policies/${user.email}`),
+          fetch("http://localhost:5000/admin/policies")
+        ]);
+        const data    = await appRes.json();
+        const polData = await polRes.json();
+        // Build a map of _id -> policyName for admin-created policies
+        const nameMap = {};
+        polData.forEach(p => { if (p._id && p.policyName) nameMap[p._id] = p.policyName; });
+        setPolicyNameMap(nameMap);
         setPolicies(data);
       } catch (error) {
         console.log(error);
@@ -77,7 +91,7 @@ export default function MyPolicies() {
 
                   {/* Header */}
                   <div className="d-flex justify-content-between align-items-start mb-2">
-                    <h5 className="mb-0">{formatPolicyName(policy.policyTypeName)}</h5>
+                    <h5 className="mb-0">{formatPolicyName(policy.policyTypeName, policyNameMap[policy.policyTypeName])}</h5>
                     <span className={`badge ${isApproved ? "bg-success" : policy.status === "Rejected" ? "bg-danger" : "bg-warning text-dark"}`}>
                       {policy.status || "Pending"}
                     </span>

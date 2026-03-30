@@ -28,17 +28,22 @@ export default function Payment() {
         const found = data.find(a => a._id === applicationId);
         setPolicy(found || null);
 
-        // Fetch premium amount from the policy in DB
-        if (found) {
+        // If policyTypeName looks like a MongoDB _id, resolve the real name
+        if (found && /^[a-f0-9]{24}$/i.test((found.policyTypeName||"").trim())) {
           try {
             const polRes  = await fetch("http://localhost:5000/admin/policies");
             const polData = await polRes.json();
-            // Match by policyTypeName or policyId
-            const matchedPolicy = polData.find(p =>
-              p.policyId === found.policyTypeName ||
-              (p.policyName || "").toLowerCase() === (found.policyTypeName || "").toLowerCase()
-            );
-            if (matchedPolicy) setPremiumAmount(matchedPolicy.premiumAmount);
+            const matched = polData.find(p => p._id === found.policyTypeName);
+            if (matched) setResolvedPolicyName(matched.policyName);
+          } catch (e) { console.log(e); }
+        }
+
+        // Fetch premium amount from backend (reliable server-side lookup)
+        if (found) {
+          try {
+            const premRes  = await fetch(`http://localhost:5000/payment/premium/${applicationId}`);
+            const premData = await premRes.json();
+            setPremiumAmount(premData.premiumAmount || 0);
           } catch (e) { console.log(e); }
         }
       } catch (e) { console.log(e); }
@@ -88,15 +93,19 @@ export default function Payment() {
     }
   };
 
-  const formatPolicyName = (name) => {
+  const [resolvedPolicyName, setResolvedPolicyName] = useState("");
+
+  const formatPolicyName = (name, resolved) => {
     if (!name) return "—";
+    // If it looks like a MongoDB _id, use resolved name
+    if (/^[a-f0-9]{24}$/i.test((name||"").trim())) return resolved || "Insurance Policy";
     const map = {
       housing: "Housing Insurance", health: "Health Insurance",
       vehicle: "Vehicle Insurance", life: "Life Insurance",
       travel: "Travel Insurance",   retirement: "Retirement & Pension Plan",
       child: "Child Education Plan", business: "Business Insurance"
     };
-    return map[name.toLowerCase()] || name.charAt(0).toUpperCase() + name.slice(1);
+    return map[(name||"").toLowerCase()] || name.charAt(0).toUpperCase() + name.slice(1);
   };
 
   if (loading) return (
@@ -115,7 +124,7 @@ export default function Payment() {
         <h3 className="mt-3 mb-1">Payment Successful!</h3>
         <p className="text-muted mb-1">Your policy is now active.</p>
         <p className="text-muted small mb-4">
-          Policy: <strong>{formatPolicyName(policy.policyTypeName)}</strong><br />
+          Policy: <strong>{formatPolicyName(policy.policyTypeName, resolvedPolicyName)}</strong><br />
           Policy ID: <span className="badge bg-secondary">{policy.policyId}</span>
         </p>
         <button className="btn btn-primary w-100" onClick={() => navigate("/my-policies")}>
@@ -133,7 +142,7 @@ export default function Payment() {
 
         {/* Policy summary */}
         <div className="card p-3 mb-4" style={{ backgroundColor: "#f8f9fa", border: "1px solid #dee2e6" }}>
-          <p className="mb-1"><strong>Policy:</strong> {formatPolicyName(policy.policyTypeName)}</p>
+          <p className="mb-1"><strong>Policy:</strong> {formatPolicyName(policy.policyTypeName, resolvedPolicyName)}</p>
           <p className="mb-1"><strong>Policy ID:</strong> <span className="badge bg-secondary">{policy.policyId}</span></p>
           <p className="mb-0"><strong>Applicant:</strong> {policy.firstName} {policy.lastName}</p>
           {premiumAmount && (

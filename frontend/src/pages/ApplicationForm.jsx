@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
 export default function ApplyPolicy() {
@@ -28,6 +28,25 @@ export default function ApplyPolicy() {
 
   const [photo, setPhoto] = useState(null);
   const [idProof, setIdProof] = useState(null);
+
+  /* ── ADDED: fetch real policy name using the _id from URL ── */
+  const [policyName, setPolicyName] = useState("");
+  useEffect(() => {
+  fetch("http://localhost:5000/admin/policies")
+    .then((res) => res.json())
+    .then((policies) => {
+      console.log("policies:", policies);
+      console.log("looking for policyId:", policyId);
+      const found = policies.find(
+        (p) => p._id.toString() === policyId.toString() || 
+               p.policyId === policyId
+      );
+      console.log("found:", found);
+      if (found) setPolicyName(found.policyName);
+    })
+    .catch((err) => console.error("Failed to fetch policy name:", err));
+}, [policyId]);
+  /* ────────────────────────────────────────────────────────── */
 
   const handleChange = (e) => {
     setFormData({
@@ -95,7 +114,9 @@ data.append("userId", user._id);
           <input name="state" onChange={handleChange} placeholder="State" className="form-control mb-2" required />
           <input name="pincode" onChange={handleChange} placeholder="Pincode" className="form-control mb-2" required />
 
-          <input value={policyId} readOnly className="form-control mb-2" />
+          {/* ── CHANGED: show policy name instead of raw _id ── */}
+          <input value={policyName || "Loading..."} readOnly className="form-control mb-2" />
+          {/* ─────────────────────────────────────────────────── */}
 
           <input name="annualIncome" type="number" onChange={handleChange} placeholder="Annual Income" className="form-control mb-2" required />
 

@@ -12,7 +12,15 @@ export default function PolicyCarousel() {
       try {
         const res  = await fetch("http://localhost:5000/admin/policies");
         const data = await res.json();
-        const valid = data.filter(p => p.policyName && p.premiumAmount);
+        const isMongoId = (s) => /^[a-f0-9]{24}$/i.test((s||"").trim());
+        const knownTypes = ["housing","health","vehicle","life","travel","retirement","child","business"];
+        const valid = data.filter(p =>
+          p.policyName &&
+          p.premiumAmount &&
+          !isMongoId(p.policyName) &&
+          !knownTypes.includes((p.policyName||"").toLowerCase().trim()) &&
+          (p.description || p.coverage || p.duration)
+        );
         setPolicies(valid);
       } catch (e) { console.log(e); }
     };

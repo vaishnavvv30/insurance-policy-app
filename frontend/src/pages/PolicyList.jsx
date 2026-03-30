@@ -13,8 +13,20 @@ export default function PolicyList() {
       try {
         const res  = await fetch("http://localhost:5000/admin/policies");
         const data = await res.json();
-        // Only show policies that have a proper policyName (admin-created)
-        const valid = data.filter(p => p.policyName && p.premiumAmount);
+        // Only show admin-created policies
+        // Exclude: policies where policyName looks like a MongoDB _id (24-char hex)
+        // Exclude: policies where policyName is a known type key (housing/health etc)
+        // Exclude: policies with no description AND no coverage (user-applied leftovers)
+        const knownTypes   = ["housing","health","vehicle","life","travel","retirement","child","business"];
+        const isMongoId    = (str) => /^[a-f0-9]{24}$/i.test((str || "").trim());
+        const isKnownType  = (str) => knownTypes.includes((str || "").toLowerCase().trim());
+        const valid = data.filter(p =>
+          p.policyName &&
+          p.premiumAmount &&
+          !isMongoId(p.policyName) &&
+          !isKnownType(p.policyName) &&
+          (p.description || p.coverage || p.duration)  // must have at least one real field
+        );
         setPolicies(valid);
       } catch (e) { console.log(e); }
     };
